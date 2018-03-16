@@ -2,7 +2,7 @@
 
 const requireInject = require("require-inject");
 
-const {expect} = require("../assert");
+const {expect} = require("../../assert");
 
 const T1 = 100; // 00:01:40
 const T2 = 300; // 00:05:00
@@ -13,13 +13,13 @@ const V1 = 200; // 00:03:20
 const videoUrl = "http://foo.com/video";
 
 const {getAttentionProgress, getRemainingAttention} =
-    requireInject("../../src/lib/background/session/thresholds", {
-      "../../src/lib/common/constants": {
+    requireInject("../../../src/lib/background/session/thresholds", {
+      "../../../src/lib/common/constants": {
         ATTENTION_LAST_THRESHOLD: TN,
         ATTENTION_THRESHOLDS: [T1, T2, T3, T4],
         ATTENTION_AUDIO_THRESHOLDS: [V1]
       },
-      "../../src/lib/background/tabPages": {
+      "../../../src/lib/background/tabPages": {
         getByUrl: (url) => ({isAudio: url == videoUrl})
       }
     });

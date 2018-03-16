@@ -1,5 +1,12 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+const {promisify} = require("util");
+
+let fsReaddir = promisify(fs.readdir);
+let fsStat = promisify(fs.stat);
+
 // Based on https://gist.github.com/jakearchibald/31b89cba627924972ad6
 function spawn(generatorFunc)
 {
@@ -30,3 +37,29 @@ function spawn(generatorFunc)
   return onFulfilled();
 }
 exports.spawn = spawn;
+
+async function getFiles(rootDir)
+{
+  let allFiles = [];
+  let queue = [rootDir];
+
+  while (queue.length > 0)
+  {
+    let dir = queue.shift();
+    let stat = await fsStat(dir);
+
+    if (stat.isDirectory())
+    {
+      let files = await fsReaddir(dir);
+      files = files.map((file) => path.join(dir, file));
+      queue.push(...files);
+    }
+    else
+    {
+      allFiles.push(dir);
+    }
+  }
+
+  return allFiles;
+}
+exports.getFiles = getFiles;

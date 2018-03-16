@@ -1,19 +1,21 @@
 "use strict";
 
-const {assert} = require("../assert");
-const {spawn} = require("../utils");
-const {indexedDB, IDBKeyRange} = require("../mocks/indexeddb");
+const {assert} = require("../../assert");
+const {spawn} = require("../../utils");
+const {indexedDB, IDBKeyRange} = require("../../mocks/indexeddb");
 const SagaTester = require("redux-saga-tester").default;
 const requireInject = require("require-inject");
 
-const {rootReducer} = requireInject("../../src/lib/background/state/reducers");
+const {rootReducer} = requireInject(
+  "../../../src/lib/background/state/reducers"
+);
 const {
   SAVE_TIMESTAMP,
   SAVE_TIMESTAMP_MERGE_PENDING,
   SAVE_TIMESTAMP_SUCCESS
-} = require("../../src/lib/background/state/types/history");
+} = require("../../../src/lib/background/state/types/history");
 
-const TEST_PATH = "../../src/lib/background/state/sagas/saveVisitTimestamps";
+const TEST_PATH = "../../../src/lib/background/state/sagas/saveVisitTimestamps";
 
 
 const makeSagaTester = () => new SagaTester({

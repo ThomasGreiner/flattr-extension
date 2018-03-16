@@ -1,13 +1,13 @@
 "use strict";
 
-const {removeAllDatabases} = require("../mocks/dexie");
+const {removeAllDatabases} = require("../../mocks/dexie");
 
-const {run} = require("../mocks/sessionRunner");
-const {expect} = require("../assert");
+const {run} = require("../../mocks/sessionRunner");
+const {expect} = require("../../assert");
 const {
   ATTENTION_DURATION,
   ATTENTION_THRESHOLDS
-} = require("../../src/lib/common/constants");
+} = require("../../../src/lib/common/constants");
 
 const mockEntity = "example.com";
 const mockUrl = "http://www.example.com/foo-session";

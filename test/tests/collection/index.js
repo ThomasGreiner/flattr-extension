@@ -9,8 +9,8 @@ const {
   expectFromList,
   expectLoaded,
   setupRequireProxy
-} = require("../assert");
-const {Window} = require("../mocks/window");
+} = require("../../assert");
+const {Window} = require("../../mocks/window");
 
 describe("Test background page data collection", () =>
 {
@@ -99,15 +99,15 @@ describe("Test background page data collection", () =>
     let win = new Window();
     win.chrome = chrome;
 
-    requireInject("../../src/lib/background", {
+    requireInject("../../../src/lib/background", {
       "global/window": win,
-      "../../src/lib/common/env/chrome": {chrome},
-      "../../src/lib/common/env/external": {},
-      "../../src/lib/common/account": {
+      "../../../src/lib/common/env/chrome": {chrome},
+      "../../../src/lib/common/env/external": {},
+      "../../../src/lib/common/account": {
         isActive: () => Promise.resolve(true),
         sendFlattrs: () => Promise.resolve({ok: true})
       },
-      "../../src/lib/common/events":
+      "../../../src/lib/common/events":
       {
         emit(name, {tabId, action, data})
         {
@@ -119,15 +119,15 @@ describe("Test background page data collection", () =>
 
         on(name, listener) {}
       },
-      "../../src/lib/background/domains": {
+      "../../../src/lib/background/domains": {
         setDomainBlocked: () => Promise.resolve()
       },
-      "../../src/lib/background/history": {},
-      "../../src/lib/background/icon": {},
-      "../../src/lib/background/stats/collector": {
+      "../../../src/lib/background/history": {},
+      "../../../src/lib/background/icon": {},
+      "../../../src/lib/background/stats/collector": {
         setFeedbackInterval() {}
       },
-      "../../src/lib/background/update": {}
+      "../../../src/lib/background/update": {}
     });
 
     expecting.push([null, "window-selected", {windowId: 1}]);
@@ -234,13 +234,13 @@ describe("Test background page data collection", () =>
       {id: 2}
     ]);
 
-    requireInject("../../src/lib/background", {
+    requireInject("../../../src/lib/background", {
       "global/window": {
         navigator: {platform: "platformid"}
       },
-      "../../src/lib/common/env/chrome": {chrome},
-      "../../src/lib/common/env/external": {},
-      "../../src/lib/common/events": {
+      "../../../src/lib/common/env/chrome": {chrome},
+      "../../../src/lib/common/env/external": {},
+      "../../../src/lib/common/events": {
         on(name, listener)
         {
           switch (name)
@@ -255,14 +255,14 @@ describe("Test background page data collection", () =>
           }
         }
       },
-      "../../src/lib/common/settings": {},
-      "../../src/lib/background/api": {},
-      "../../src/lib/background/history": {},
-      "../../src/lib/background/icon": {},
-      "../../src/lib/background/notification": {},
-      "../../src/lib/background/stats": {},
-      "../../src/lib/background/stats/collector": {},
-      "../../src/lib/background/stats/record": {
+      "../../../src/lib/common/settings": {},
+      "../../../src/lib/background/api": {},
+      "../../../src/lib/background/history": {},
+      "../../../src/lib/background/icon": {},
+      "../../../src/lib/background/notification": {},
+      "../../../src/lib/background/stats": {},
+      "../../../src/lib/background/stats/collector": {},
+      "../../../src/lib/background/stats/record": {
         record(tabId, action, data)
         {
           if (!(action in expecting))
@@ -297,7 +297,7 @@ describe("Test background page data collection", () =>
           }
         }
       },
-      "../../src/lib/background/update": {}
+      "../../../src/lib/background/update": {}
     });
   });
 });
@@ -313,20 +313,20 @@ describe("Test content script data collection", () =>
 
     setupRequireProxy();
 
-    requireInject("../../src/lib/content", {
+    requireInject("../../../src/lib/content", {
       "global/window": win,
-      "../../src/lib/common/env/chrome": {chrome},
-      "../../src/lib/background/domains": {
+      "../../../src/lib/common/env/chrome": {chrome},
+      "../../../src/lib/background/domains": {
         isURLBlocked()
         {
           return !!isBlocked;
         }
       },
-      "../../src/lib/content/account": {
+      "../../../src/lib/content/account": {
         sendFlattrs: () => Promise.resolve({ok: true})
       },
-      "../../src/lib/content/api": {},
-      "../../src/lib/content/stats": {}
+      "../../../src/lib/content/api": {},
+      "../../../src/lib/content/stats": {}
     });
 
     expectLoaded({
@@ -340,9 +340,9 @@ describe("Test content script data collection", () =>
   {
     let expected = [];
     let win = new Window();
-    requireInject("../../src/lib/content/stats", {
+    requireInject("../../../src/lib/content/stats", {
       "global/window": win,
-      "../../src/lib/common/events":
+      "../../../src/lib/common/events":
       {
         emit(type, action, data)
         {
@@ -382,7 +382,7 @@ describe("Test content script data collection", () =>
   {
     let hasListeners = false;
 
-    requireInject("../../src/lib/content/stats", {
+    requireInject("../../../src/lib/content/stats", {
       "global/window": {
         window: {
           addEventListener()
@@ -391,7 +391,7 @@ describe("Test content script data collection", () =>
           }
         }
       },
-      "../../src/lib/common/events": {
+      "../../../src/lib/common/events": {
         on(name, listener)
         {
           if (name != "load")
@@ -422,8 +422,8 @@ describe("Test content script data collection", () =>
           expect(hasListeners).to.equal(true);
         }
       },
-      "../../src/lib/content/stats/author": {},
-      "../../src/lib/content/stats/scroll": {}
+      "../../../src/lib/content/stats/author": {},
+      "../../../src/lib/content/stats/scroll": {}
     });
   });
 });

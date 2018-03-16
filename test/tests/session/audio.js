@@ -2,15 +2,15 @@
 
 const requireInject = require("require-inject");
 
-const {expect} = require("../assert");
-const {spawn} = require("../utils");
+const {expect} = require("../../assert");
+const {spawn} = require("../../utils");
 
 const {
   ATTENTION_AUDIO_INTERVAL_SYM,
   ATTENTION_AUDIO_TIMEOUT,
   ATTENTION_AUDIO_TIMEOUT_SYM,
   ATTENTION_DURATION
-} = require("../../src/lib/common/constants");
+} = require("../../../src/lib/common/constants");
 
 function expectTabPage(tabPage, flags)
 {
@@ -64,7 +64,7 @@ function createMock(tabPage = {})
   let eventLog = [];
   let timeout;
 
-  let audio = requireInject("../../src/lib/background/session/audio", {
+  let audio = requireInject("../../../src/lib/background/session/audio", {
     "global/window": {
       clearInterval: () => eventLog.push(["interval.clear"]),
       clearTimeout: () => eventLog.push(["timeout.clear"]),
@@ -79,7 +79,7 @@ function createMock(tabPage = {})
         eventLog.push(["timeout.set", duration, ...args]);
       }
     },
-    "../../src/lib/background/session/storage": {
+    "../../../src/lib/background/session/storage": {
       updatePage(tabId, tabUpdate)
       {
         expect(tabUpdate).to.deep.equal({isAudio: true});
@@ -87,13 +87,13 @@ function createMock(tabPage = {})
         return Promise.resolve();
       }
     },
-    "../../src/lib/background/stats/record": {
+    "../../../src/lib/background/stats/record": {
       record(...args)
       {
         eventLog.push(["record", ...args]);
       }
     },
-    "../../src/lib/background/tabPages": new Map([[1, tabPage]])
+    "../../../src/lib/background/tabPages": new Map([[1, tabPage]])
   });
 
   return {
@@ -109,14 +109,14 @@ describe("Test audio-based flattring", () =>
 {
   it("Should react to events", () =>
   {
-    const {emit, on} = require("../../src/lib/common/events");
+    const {emit, on} = require("../../../src/lib/common/events");
 
     let eventLog;
     let audibleStates;
     let log = (...event) => eventLog.push(event);
 
-    requireInject("../../src/lib/background/session", {
-      "../../src/lib/background/session/attention": {
+    requireInject("../../../src/lib/background/session", {
+      "../../../src/lib/background/session/attention": {
         start(...args)
         {
           log("start", ...args);
@@ -128,17 +128,17 @@ describe("Test audio-based flattring", () =>
           return Promise.resolve();
         }
       },
-      "../../src/lib/background/session/audio": {
+      "../../../src/lib/background/session/audio": {
         isAudible: () => audibleStates.shift(),
         reset: log.bind(null, "audio.reset"),
         update: log.bind(null, "audio.update")
       },
-      "../../src/lib/background/session/storage": {
+      "../../../src/lib/background/session/storage": {
         getPage: () => ({}),
         removePage: log.bind(null, "remove"),
         updatePage: log.bind(null, "update")
       },
-      "../../src/lib/common/events": {on}
+      "../../../src/lib/common/events": {on}
     });
 
     async function checkEvents(newAudibleStates, [action, data], expected)

@@ -1,18 +1,18 @@
 "use strict";
 
 const deepFreeze = require("deep-freeze");
-const {assert} = require("../assert");
+const {assert} = require("../../assert");
 
 const {
   history: historyReducer
-} = require("../../src/lib/background/state/reducers/history");
+} = require("../../../src/lib/background/state/reducers/history");
 
 const {
   SAVE_TIMESTAMP,
   SAVE_TIMESTAMP_MERGE_PENDING,
   SAVE_TIMESTAMP_SUCCESS,
   SAVE_TIMESTAMP_FAILURE
-} = require("../../src/lib/background/state/types/history");
+} = require("../../../src/lib/background/state/types/history");
 
 const timestampOne = {timestamp: 1};
 const timestampTwo = {timestamp: 2};

@@ -2,18 +2,18 @@
 
 const deepFreeze = require("deep-freeze");
 
-const {assert} = require("../assert");
+const {assert} = require("../../assert");
 
 const {
   flattrs: flattrsReducer
-} = require("../../src/lib/background/state/reducers/flattrs");
+} = require("../../../src/lib/background/state/reducers/flattrs");
 
 const {
   SUBMIT_FLATTRS,
   SUBMIT_FLATTRS_MERGE_PENDING,
   SUBMIT_FLATTRS_SUCCESS,
   SUBMIT_FLATTRS_FAILURE
-} = require("../../src/lib/background/state/types/flattrs");
+} = require("../../../src/lib/background/state/types/flattrs");
 
 describe("Test the flattrs reducer", () =>
 {

@@ -3,7 +3,7 @@
 const requireInject = require("require-inject");
 const {expect} = require("chai");
 
-const {Window} = require("../mocks/window");
+const {Window} = require("../../mocks/window");
 
 describe("Test background page data collection of scroll events", () =>
 {
@@ -25,9 +25,9 @@ describe("Test background page data collection of scroll events", () =>
   it("Should record scroll events", () =>
   {
     let win = new Window();
-    requireInject("../../src/lib/content/stats/scroll", {
+    requireInject("../../../src/lib/content/stats/scroll", {
       "global/window": win,
-      "../../src/lib/common/events":
+      "../../../src/lib/common/events":
       {
         emit(type, action, data)
         {

@@ -1,7 +1,7 @@
 "use strict";
 
-const {assert} = require("../assert");
-const {spawn} = require("../utils");
+const {assert} = require("../../assert");
+const {spawn} = require("../../utils");
 const {buffers, channel} = require("redux-saga");
 const SagaTester = require("redux-saga-tester").default;
 const {
@@ -9,15 +9,17 @@ const {
 } = require("redux-saga/effects");
 const requireInject = require("require-inject");
 
-const {rootReducer} = requireInject("../../src/lib/background/state/reducers");
+const {rootReducer} = requireInject(
+  "../../../src/lib/background/state/reducers"
+);
 const {
   SUBMIT_FLATTRS,
   SUBMIT_FLATTRS_MERGE_PENDING,
   SUBMIT_FLATTRS_SUCCESS,
   SUBMIT_FLATTRS_FAILURE
-} = require("../../src/lib/background/state/types/flattrs");
+} = require("../../../src/lib/background/state/types/flattrs");
 
-const TEST_PATH = "../../src/lib/background/state/sagas/submitFlattrs";
+const TEST_PATH = "../../../src/lib/background/state/sagas/submitFlattrs";
 const RETRY = {retry: true};
 const OK = {ok: true};
 const FAIL_RETRY = {ok: false, status: 500};
@@ -34,9 +36,9 @@ const makeTestModule = ({sendFlattrs}) =>
       },
       clearTimeout
     },
-    "../../src/lib/background/server/api": {sendFlattrs}
+    "../../../src/lib/background/server/api": {sendFlattrs}
   };
-  let sagaUtilsPath = "../../src/lib/background/state/sagas/utils";
+  let sagaUtilsPath = "../../../src/lib/background/state/sagas/utils";
   const {delay} = requireInject(sagaUtilsPath, deps);
   deps[sagaUtilsPath] = {delay};
   let result = requireInject(TEST_PATH, deps);

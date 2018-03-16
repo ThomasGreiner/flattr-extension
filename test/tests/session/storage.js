@@ -2,17 +2,17 @@
 
 const requireInject = require("require-inject");
 
-const {localforage} = require("../mocks/localforage");
-const {Window} = require("../mocks/window");
-const {removeAllDatabases} = require("../mocks/dexie");
+const {localforage} = require("../../mocks/localforage");
+const {Window} = require("../../mocks/window");
+const {removeAllDatabases} = require("../../mocks/dexie");
 
-const {expect, prepareExpectObject} = require("../assert");
-const {spawn} = require("../utils");
+const {expect, prepareExpectObject} = require("../../assert");
+const {spawn} = require("../../utils");
 
 const {
   ATTENTION_THRESHOLDS,
   STATUS_ENABLED
-} = require("../../src/lib/common/constants");
+} = require("../../../src/lib/common/constants");
 const MOCK_ENTITY = "example.com";
 
 let expectTabPage = prepareExpectObject({
@@ -54,7 +54,7 @@ function createMockStorage({presets})
   function getDatabase(name)
   {
     return requireInject(
-      "../../src/lib/background/database/" + name,
+      "../../../src/lib/background/database/" + name,
       {
         "global/window": win
       }
@@ -66,18 +66,18 @@ function createMockStorage({presets})
 
   let deps = {
     localforage,
-    "../../src/data/domains": presets,
-    "../../src/lib/background/database/flattrs": {db: flattrsDb},
-    "../../src/lib/background/database/session": {db: sessionDb},
-    "../../src/lib/common/env/chrome": {chrome: {}},
+    "../../../src/data/domains": presets,
+    "../../../src/lib/background/database/flattrs": {db: flattrsDb},
+    "../../../src/lib/background/database/session": {db: sessionDb},
+    "../../../src/lib/common/env/chrome": {chrome: {}},
     "global/window": win,
-    "../../src/lib/background/server/api": {
+    "../../../src/lib/background/server/api": {
       sendFlattrs: () => Promise.resolve({ok: true})
     }
   };
 
   let flattrManager = requireInject(
-    "../../src/lib/background/flattrManager",
+    "../../../src/lib/background/flattrManager",
     deps
   );
 
@@ -97,10 +97,10 @@ function createMockStorage({presets})
   flattrManager.submit = submitWrapper(flattrManager.submit);
 
   deps = Object.assign({}, deps);
-  deps["../../src/lib/background/flattrManager"] = flattrManager;
+  deps["../../../src/lib/background/flattrManager"] = flattrManager;
 
   let storage = requireInject(
-    "../../src/lib/background/session/storage",
+    "../../../src/lib/background/session/storage",
     deps
   );
 

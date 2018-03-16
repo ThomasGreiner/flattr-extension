@@ -2,9 +2,9 @@
 
 const requireInject = require("require-inject");
 
-const {expect} = require("../assert");
-const {spawn} = require("../utils");
-const {ATTENTION_DURATION} = require("../../src/lib/common/constants");
+const {expect} = require("../../assert");
+const {spawn} = require("../../utils");
+const {ATTENTION_DURATION} = require("../../../src/lib/common/constants");
 
 function createMock({attentions, date, pages, timeouts})
 {
@@ -13,7 +13,7 @@ function createMock({attentions, date, pages, timeouts})
   pages = pages || new Map();
   timeouts = timeouts || [];
 
-  return requireInject("../../src/lib/background/session/attention", {
+  return requireInject("../../../src/lib/background/session/attention", {
     "global/window":
     {
       window:
@@ -30,7 +30,7 @@ function createMock({attentions, date, pages, timeouts})
       },
       Date: {now: () => date.now * 1000}
     },
-    "../../src/lib/background/session/storage":
+    "../../../src/lib/background/session/storage":
     {
       addAttention(tabId, url, newAttention)
       {

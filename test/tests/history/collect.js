@@ -3,22 +3,22 @@
 const requireInject = require("require-inject");
 const chrome = require("sinon-chrome");
 
-const {Window} = require("../mocks/window");
-const {expect} = require("../assert");
-const {spawn} = require("../utils");
+const {Window} = require("../../mocks/window");
+const {expect} = require("../../assert");
+const {spawn} = require("../../utils");
 
 const {
   STATUS_BLOCKED,
   STATUS_DISABLED,
   STATUS_ENABLED,
   STATUS_UNDEFINED
-} = require("../../src/lib/common/constants");
+} = require("../../../src/lib/common/constants");
 
 const mockUrl = "http://example.com/";
 const mockUrlBlocked = "http://blocked.example.com/";
 const mockUrlDisabled = "http://disabled.example.com/";
 
-let {db} = requireInject("../../src/lib/background/database/visits", {
+let {db} = requireInject("../../../src/lib/background/database/visits", {
   "global/window": new Window()
 });
 let bulkPut = db.visits.bulkPut.bind(db.visits);
@@ -39,8 +39,8 @@ function triggerVisit(visits, expected, options = {})
         setTimeout,
         clearTimeout
       },
-      "../../src/lib/background/database/visits": {db, bulkPut},
-      "../../src/lib/background/domains": {
+      "../../../src/lib/background/database/visits": {db, bulkPut},
+      "../../../src/lib/background/domains": {
         getStatus({url})
         {
           let status = STATUS_UNDEFINED;
@@ -59,26 +59,29 @@ function triggerVisit(visits, expected, options = {})
           return Promise.resolve({combined: status});
         }
       },
-      "../../src/lib/common/account": {
+      "../../../src/lib/common/account": {
         isActive: () => Promise.resolve(active)
       },
-      "../../src/lib/common/constants": {
+      "../../../src/lib/common/constants": {
         HISTORY_MAX_VISIT_DEVIATION: maxDeviation,
         STATUS_BLOCKED,
         STATUS_DISABLED
       }
     };
 
-    let events = requireInject("../../src/lib/common/events", deps);
-    deps["../../src/lib/common/events"] = events;
+    let events = requireInject("../../../src/lib/common/events", deps);
+    deps["../../../src/lib/common/events"] = events;
 
-    let state = requireInject("../../src/lib/background/state", deps);
-    deps["../../src/lib/background/state"] = state;
+    let state = requireInject("../../../src/lib/background/state", deps);
+    deps["../../../src/lib/background/state"] = state;
 
-    let utils = requireInject("../../src/lib/background/history/utils", deps);
-    deps["../../src/lib/background/history/utils"] = utils;
+    let utils = requireInject(
+      "../../../src/lib/background/history/utils",
+      deps
+    );
+    deps["../../../src/lib/background/history/utils"] = utils;
 
-    deps["../../src/lib/common/env/chrome"] = {
+    deps["../../../src/lib/common/env/chrome"] = {
       chrome: {
         history: {
           onVisited: {
@@ -100,7 +103,7 @@ function triggerVisit(visits, expected, options = {})
       }
     };
 
-    requireInject("../../src/lib/background/history/collect", deps);
+    requireInject("../../../src/lib/background/history/collect", deps);
   });
 }
 
@@ -172,10 +175,10 @@ describe("Test visits collection", () =>
     return spawn(function*()
     {
       const {removeVisits} = requireInject(
-        "../../src/lib/background/history/collect",
+        "../../../src/lib/background/history/collect",
         {
-          "../../src/lib/background/database/visits": {db},
-          "../../src/lib/common/env/chrome": {chrome}
+          "../../../src/lib/background/database/visits": {db},
+          "../../../src/lib/common/env/chrome": {chrome}
         }
       );
 

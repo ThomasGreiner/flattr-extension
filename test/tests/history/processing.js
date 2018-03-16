@@ -3,9 +3,9 @@
 const requireInject = require("require-inject");
 const chrome = require("sinon-chrome");
 
-const {HISTORY_CONDITIONS} = require("../../src/lib/common/constants");
-const {Window} = require("../mocks/window");
-const {expect} = require("../assert");
+const {HISTORY_CONDITIONS} = require("../../../src/lib/common/constants");
+const {Window} = require("../../mocks/window");
+const {expect} = require("../../assert");
 
 const MIN_S = 60; // 00:01:00
 const HOUR_S = 60 * MIN_S; // 01:00:00
@@ -15,7 +15,7 @@ const mockUrl = "http://www.example.com";
 const mockUrlVideo = "http://www.youtube.com";
 const [long, short] = HISTORY_CONDITIONS;
 
-let {db} = requireInject("../../src/lib/background/database/visits", {
+let {db} = requireInject("../../../src/lib/background/database/visits", {
   "global/window": new Window()
 });
 
@@ -45,9 +45,9 @@ function checkFlattrs(localHistory, chromeHistory, expected)
 
   let {
     processHistory
-  } = requireInject("../../src/lib/background/history/processor", {
-    "../../src/lib/background/database/visits": {db},
-    "../../src/lib/common/env/chrome": {chrome}
+  } = requireInject("../../../src/lib/background/history/processor", {
+    "../../../src/lib/background/database/visits": {db},
+    "../../../src/lib/common/env/chrome": {chrome}
   });
 
   if (!localHistory)

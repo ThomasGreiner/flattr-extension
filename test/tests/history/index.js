@@ -2,8 +2,8 @@
 
 const requireInject = require("require-inject");
 
-const {HISTORY_PROCESSING_DELAY} = require("../../src/lib/common/constants");
-const {expect} = require("../assert");
+const {HISTORY_PROCESSING_DELAY} = require("../../../src/lib/common/constants");
+const {expect} = require("../../assert");
 
 const start = Date.now();
 
@@ -25,7 +25,7 @@ function runTasks(firstProcessing, flattrEntities, options = {})
 
   return new Promise((resolve, reject) =>
   {
-    requireInject("../../src/lib/background/history/task", {
+    requireInject("../../../src/lib/background/history/task", {
       "global/window": {
         Date: {
           now: () => now
@@ -37,20 +37,20 @@ function runTasks(firstProcessing, flattrEntities, options = {})
           listener(...args);
         }
       },
-      "../../src/lib/common/account": {
+      "../../../src/lib/common/account": {
         isActive: () => Promise.resolve(active)
       },
-      "../../src/lib/common/dates": {
+      "../../../src/lib/common/dates": {
         DAY_END: Symbol(),
         getTimestamp: () => getNthTimestamp(now, 1)
       },
-      "../../src/lib/common/events": {
+      "../../../src/lib/common/events": {
         emit(...args)
         {
           actions.push(["event", ...args]);
         }
       },
-      "../../src/lib/common/settings": {
+      "../../../src/lib/common/settings": {
         get(name, defaultValue)
         {
           return Promise.resolve(firstProcessing || defaultValue);
@@ -61,7 +61,7 @@ function runTasks(firstProcessing, flattrEntities, options = {})
           return Promise.resolve(value);
         }
       },
-      "../../src/lib/background/alarms": {
+      "../../../src/lib/background/alarms": {
         setAlarm(when, listener, ...args)
         {
           actions.push(["alarm", when, ...args]);
@@ -79,27 +79,27 @@ function runTasks(firstProcessing, flattrEntities, options = {})
           return Promise.resolve();
         }
       },
-      "../../src/lib/background/flattrManager": {
+      "../../../src/lib/background/flattrManager": {
         submit(flattr)
         {
           actions.push(["submit", now, flattr]);
         }
       },
-      "../../src/lib/background/history/collect": {
+      "../../../src/lib/background/history/collect": {
         removeVisits({before})
         {
           actions.push(["remove", before]);
           return Promise.resolve();
         }
       },
-      "../../src/lib/background/history/processor": {
+      "../../../src/lib/background/history/processor": {
         processHistory(lastProcessing)
         {
           actions.push(["process", lastProcessing]);
           return Promise.resolve(flattrEntities);
         }
       },
-      "../../src/lib/background/session/storage": {
+      "../../../src/lib/background/session/storage": {
         reset()
         {
           actions.push(["session", "reset"]);

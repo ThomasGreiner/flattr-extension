@@ -6,6 +6,7 @@ const parseArgs = require("minimist");
 const Mocha = require("mocha");
 
 const {getArgs} = require("../build/cli");
+const {getFiles} = require("./utils");
 
 const testsDir = path.join(__dirname, "tests");
 
@@ -31,7 +32,7 @@ function run()
   {
     const mochaRunner = new Mocha(mochaOpts);
 
-    fs.readdir(testsDir, (err, files) =>
+    getFiles(testsDir).then((files) =>
     {
       for (let file of files)
       {
@@ -41,10 +42,10 @@ function run()
         if (args.exclude && reExcluded.test(file))
           continue;
 
-        if (args.nobuilds && file == "build.js")
+        if (args.nobuilds && path.basename(file) == "build.js")
           continue;
 
-        mochaRunner.addFile(path.join(testsDir, file));
+        mochaRunner.addFile(file);
       }
 
       process.env.FP_BUILD_MODE = "test";
@@ -58,7 +59,8 @@ function run()
         delete process.env.FP_BUILD_MODE;
         resolve();
       });
-    });
+    })
+    .catch(reject);
   });
 }
 exports.run = run;
