@@ -7,6 +7,7 @@ const {STATUS_BLOCKED, STATUS_DISABLED, STATUS_ENABLED, STATUS_UNDEFINED} =
 const {emit} = require("../../common/events");
 const {normalizeURL} = require("../../common/utils");
 const presetStatus = require("./status/preset");
+const userPresetStatus = require("./status/user-preset");
 const userStatus = require("./status/user");
 
 function getEntity(url)
@@ -34,19 +35,32 @@ function getStatus({domain, url})
   }
 
   let entity = tld.getDomain(domain || url);
-  return userStatus.isDisabled(entity).then((isDisabled) =>
+  return Promise.all([
+    userStatus.isDisabled(entity),
+    userPresetStatus.get()
+  ]).then(([isDisabled, userPreset]) =>
   {
     let combined = STATUS_UNDEFINED;
     let preset = presetStatus.get({domain, url});
     let user = STATUS_UNDEFINED;
 
+    let presetCombined = preset;
+    if (userPreset !== STATUS_UNDEFINED && preset !== STATUS_BLOCKED)
+    {
+      presetCombined = userPreset;
+    }
+
     if (typeof isDisabled == "boolean")
     {
       combined = user = (isDisabled) ? STATUS_DISABLED : STATUS_ENABLED;
     }
+    else if (presetCombined === STATUS_UNDEFINED)
+    {
+      combined = STATUS_DISABLED;
+    }
     else
     {
-      combined = (preset === STATUS_UNDEFINED) ? STATUS_DISABLED : preset;
+      combined = presetCombined;
     }
 
     if (preset == STATUS_BLOCKED)
@@ -54,7 +68,7 @@ function getStatus({domain, url})
       combined = STATUS_BLOCKED;
     }
 
-    return {combined, preset, user};
+    return {combined, preset, user, userPreset};
   });
 }
 exports.getStatus = getStatus;
@@ -66,11 +80,20 @@ function hasAuthors(domain)
 }
 exports.hasDomainAuthors = hasAuthors;
 
-function setStatus(entity, status)
+function setEntityStatus(entity, status)
 {
   return userStatus.setDisabled(entity, status == STATUS_DISABLED).then(() =>
   {
     emit("status-changed", {entity, status});
   });
 }
-exports.setEntityStatus = setStatus;
+exports.setEntityStatus = setEntityStatus;
+
+function setPresetStatus(status)
+{
+  return userPresetStatus.set(status).then(() =>
+  {
+    emit("status-changed", {status});
+  });
+}
+exports.setPresetStatus = setPresetStatus;

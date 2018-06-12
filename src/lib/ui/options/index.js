@@ -2,6 +2,7 @@
 
 require("../components/flattr-options-message");
 require("../components/flattr-options-beta");
+require("../components/flattr-options-preset");
 require("../components/flattr-options-review");
 
 const {window, document} = require("global/window");

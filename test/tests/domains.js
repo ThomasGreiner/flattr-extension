@@ -19,6 +19,7 @@ describe("Test domain checks", () =>
   ]);
 
   let lastUpdated = 0;
+  let userPresetStatus = UNDEFINED;
 
   const domains = requireInject("../../src/lib/background/domains", {
     "localforage":
@@ -87,15 +88,25 @@ describe("Test domain checks", () =>
             {
               if (name == "domains.lastUpdated")
                 return callback({"domains.lastUpdated": lastUpdated});
+
+              if (name == "domains.preset")
+                return callback({"domains.preset": userPresetStatus});
+
               callback({});
             },
             set(settings, callback)
             {
-              if (settings["domains.lastUpdated"])
+              if ("domains.lastUpdated" in settings)
               {
                 lastUpdated = settings["domains.lastUpdated"];
-                callback();
               }
+
+              if ("domains.preset" in settings)
+              {
+                userPresetStatus = settings["domains.preset"];
+              }
+
+              callback();
             }
           }
         }
@@ -103,72 +114,104 @@ describe("Test domain checks", () =>
     }
   });
 
-  function checkEntity([domain, combined, preset, user])
+  function checkEntity(domain, combined = UNDEFINED, {
+    preset = UNDEFINED,
+    user = UNDEFINED,
+    userPreset = UNDEFINED
+  })
   {
     return domains.getStatus({domain})
         .then((status) =>
         {
-          expect(status).to.deep.equal({combined, preset, user});
+          expect(status).to.deep.equal({combined, preset, user, userPreset});
         });
   }
 
-  function checkURL([url, combined, preset, user])
+  function checkURL(url, combined, {
+    preset = UNDEFINED,
+    user = UNDEFINED,
+    userPreset = UNDEFINED
+  })
   {
     return domains.getStatus({url})
         .then((status) =>
         {
-          expect(status).to.deep.equal({combined, preset, user});
+          expect(status).to.deep.equal({combined, preset, user, userPreset});
         });
   }
 
+  beforeEach(() =>
+  {
+    return domains.setPresetStatus(UNDEFINED);
+  });
+
   it("Should use host value", () =>
-    checkEntity(["c1.b1.a1", 30, 30, UNDEFINED]));
+    checkEntity("c1.b1.a1", 30, {preset: 30}));
 
   it("Should use pathname value", () =>
   {
     return Promise.all([
-      checkURL(["http://c2.b1.a1/foo", 31, 31, UNDEFINED]),
-      checkURL(["http://c2.b1.a1/bar", 32, 32, UNDEFINED])
+      checkURL("http://c2.b1.a1/foo", 31, {preset: 31}),
+      checkURL("http://c2.b1.a1/bar", 32, {preset: 32})
     ]);
   });
 
   it("Should match only first part of pathname", () =>
   {
     return Promise.all([
-      checkURL(["http://c2.b1.a1/", 32, 32, UNDEFINED]),
-      checkURL(["http://c2.b1.a1/foo", 31, 31, UNDEFINED]),
-      checkURL(["http://c2.b1.a1/foobar", 32, 32, UNDEFINED]),
-      checkURL(["http://c2.b1.a1/foo/bar", 31, 31, UNDEFINED])
+      checkURL("http://c2.b1.a1/", 32, {preset: 32}),
+      checkURL("http://c2.b1.a1/foo", 31, {preset: 31}),
+      checkURL("http://c2.b1.a1/foobar", 32, {preset: 32}),
+      checkURL("http://c2.b1.a1/foo/bar", 31, {preset: 31})
     ]);
   });
 
   it("Should use \"\" value", () =>
-    checkEntity(["c2.b1.a1", 32, 32, UNDEFINED]));
+    checkEntity("c2.b1.a1", 32, {preset: 32}));
 
-  it("Should use \"*\" value", () => checkEntity(["b1.a1", 22, 22, UNDEFINED]));
+  it("Should use \"*\" value", () => checkEntity("b1.a1", 22, {preset: 22}));
 
   it("Should use parent host's \"*\" value", () =>
-    checkEntity(["d1.c2.b1.a1", 33, 33, UNDEFINED]));
+    checkEntity("d1.c2.b1.a1", 33, {preset: 33}));
 
   it("Should return undefined if no matching host or parent host", () =>
-    checkEntity(["z1.y1.x1", DISABLED, UNDEFINED, UNDEFINED]));
+    checkEntity("z1.y1.x1", DISABLED, {}));
 
-  it("Should consider user changes", () =>
+  it("Should consider user presets", () =>
   {
     const disabled = "disabled-default.com";
-    let testDisabled = checkEntity([disabled, DISABLED, UNDEFINED, UNDEFINED])
+    return checkEntity(disabled, DISABLED, {})
+        .then(() => domains.setPresetStatus(ENABLED))
+        .then(() => checkEntity(disabled, ENABLED, {userPreset: ENABLED}))
+        .then(() => domains.setPresetStatus(DISABLED))
+        .then(() => checkEntity(disabled, DISABLED, {userPreset: DISABLED}));
+  });
+
+  it("Should consider user changes (preset: undefined)", () =>
+  {
+    const disabled = "disabled-default.com";
+    return checkEntity(disabled, DISABLED, {})
         .then(() => domains.setEntityStatus(disabled, ENABLED))
-        .then(() => checkEntity([disabled, ENABLED, UNDEFINED, ENABLED]))
+        .then(() => checkEntity(disabled, ENABLED, {user: ENABLED}))
         .then(() => domains.setEntityStatus(disabled, DISABLED))
-        .then(() => checkEntity([disabled, DISABLED, UNDEFINED, DISABLED]));
+        .then(() => checkEntity(disabled, DISABLED, {user: DISABLED}))
+        .then(() => domains.setPresetStatus(ENABLED))
+        .then(() => checkEntity(disabled, DISABLED,
+            {user: DISABLED, userPreset: ENABLED}));
+  });
 
+  it("Should consider user changes (preset: enabled)", () =>
+  {
     const enabled = "enabled-default.com";
-    let testEnabled = checkEntity([enabled, ENABLED, ENABLED, UNDEFINED])
+    return checkEntity(enabled, ENABLED, {preset: ENABLED})
         .then(() => domains.setEntityStatus(enabled, DISABLED))
-        .then(() => checkEntity([enabled, DISABLED, ENABLED, DISABLED]))
+        .then(() => checkEntity(enabled, DISABLED,
+            {preset: ENABLED, user: DISABLED}))
         .then(() => domains.setEntityStatus(enabled, ENABLED))
-        .then(() => checkEntity([enabled, ENABLED, ENABLED, ENABLED]));
-
-    return Promise.all([testDisabled, testEnabled]);
+        .then(() => checkEntity(enabled, ENABLED,
+            {preset: ENABLED, user: ENABLED}))
+        .then(() => domains.setPresetStatus(DISABLED))
+        .then(() => checkEntity(enabled, ENABLED,
+            {preset: ENABLED, user: ENABLED, userPreset: DISABLED}));
   });
 });
