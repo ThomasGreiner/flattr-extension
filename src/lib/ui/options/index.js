@@ -7,6 +7,7 @@ require("../components/flattr-options-review");
 
 const {window, document} = require("global/window");
 
+const {STATUS_UNDEFINED} = require("../../common/constants");
 const settings = require("../../common/settings");
 const ipc = require("../../common/ipc");
 const i18n = require("../i18n");
@@ -60,12 +61,23 @@ function createOptions()
   settings.get("feedback.disabled", false)
     .then((disabled) =>
     {
-      let ele = document.getElementsByTagName("flattr-options-beta")[0];
+      let ele = document.querySelector("flattr-options-beta");
       ele.data = {beta: !disabled};
     })
     .catch(e =>
     {
       console.error(e);
+    });
+
+  settings.get("domains.preset", STATUS_UNDEFINED)
+    .then((preset) =>
+    {
+      let domainsPreset = document.querySelector("flattr-options-preset");
+      domainsPreset.value = preset;
+    })
+    .catch((err) =>
+    {
+      console.error(err);
     });
 }
 

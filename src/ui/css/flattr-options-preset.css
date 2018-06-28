@@ -1,0 +1,35 @@
+flattr-options-preset
+{
+  border-top: 1px solid #555;
+}
+
+flattr-options-preset ul
+{
+  padding: 0;
+}
+
+flattr-options-preset li
+{
+  list-style: none;
+}
+
+flattr-options-preset input
+{
+  display: none;
+}
+
+flattr-options-preset label
+{
+  cursor: pointer;
+}
+
+flattr-options-preset input:checked + label
+{
+  color: red;
+}
+
+flattr-options-preset li a:not(:hover)
+{
+  color: inherit;
+  text-decoration: underline;
+}

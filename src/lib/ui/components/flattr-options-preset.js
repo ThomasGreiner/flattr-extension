@@ -2,58 +2,82 @@
 
 const {document} = require("global/window");
 
+const {
+  STATUS_DISABLED,
+  STATUS_ENABLED,
+  STATUS_UNDEFINED
+} = require("../../common/constants");
 const ipc = require("../../common/ipc");
 const settings = require("../../common/settings");
 const i18n = require("../i18n");
-const {VirtualElement, v, h} = require("./virtual-element");
+const {VirtualElement, h} = require("./virtual-element");
+
+let values = [
+  STATUS_UNDEFINED,
+  STATUS_ENABLED,
+  STATUS_DISABLED
+];
 
 class OptionsSectionPreset extends VirtualElement
 {
-  renderTree()
+  set value(value)
   {
-    // if (!this.isInitialized())
-    // {
-    //   return;
-    // }
-
-    // let betaEnabled = this.data.beta;
-
-    return [
-      h("h3", "Foo")
-    ];
-
-    // return [
-    //   h("h3", i18n.get("options_beta_title")),
-    //   h("p", i18n.get("options_beta_intro")),
-    //   h("p.consent", i18n.getNodes("options_beta_description", {
-    //     urls: [`${API_BASE_WEB}/privacy/consent`]
-    //   })),
-    //   h("p.consent", i18n.get("options_beta_revocation")),
-    //   h("p", i18n.get("options_beta_optin")),
-    //   v(
-    //     "input-toggle",
-    //     {
-    //       attributes: {
-    //         default: "off"
-    //       },
-    //       checked: betaEnabled,
-    //       onclick(e)
-    //       {
-    //         that.beta = this.checked;
-    //       }
-    //     },
-    //     i18n.get("options_beta_feedback_toggle", [API_BASE_DOMAIN])
-    //   ),
-    //   h("div", exporter),
-    //   h("div.footnotes", footnotes)
-    // ];
+    this._value = value;
+    settings.set("domains.preset", value);
+    this.render();
   }
 
-  set beta(value)
+  renderTree()
   {
-    let betaEnabled = value;
-    settings.set("feedback.disabled", !betaEnabled);
-    this.data = {beta: betaEnabled};
+    if (!this.isInitialized(["value"]))
+      return;
+
+    let items = values.map((value) =>
+    {
+      let stringId = `options_domains_preset_${value}`;
+      let content = null;
+
+      if (value === STATUS_UNDEFINED)
+      {
+        content = i18n.getNodes(stringId, {
+          urls: [
+            "https://blog.flattr.com/2017/09/the-story-about-the-new-flattr-the-flattr-enabled-list/"
+          ]
+        });
+      }
+      else
+      {
+        content = i18n.get(stringId);
+      }
+
+      let itemId = `domains-preset-${value}`;
+
+      return h("li", [
+        h("input", {
+          value,
+          checked: this._value === value,
+          id: itemId,
+          name: "domains-preset",
+          type: "radio",
+          onclick: (ev) =>
+          {
+            this.value = parseInt(value, 10);
+          }
+        }),
+        h(
+          "label",
+          {
+            attributes: {for: itemId}
+          },
+          [content]
+        )
+      ]);
+    });
+
+    return [
+      h("h3", i18n.get("options_domains_preset_title")),
+      h("ul", items)
+    ];
   }
 }
 
