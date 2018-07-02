@@ -199,7 +199,7 @@
     "message": "Domains you enabled"
   },
   "options_domains_preset_0": {
-    "message": "Enabled on <a>flattrable sites</a>"
+    "message": "Enabled on <a>selected sites</a> (default)"
   },
   "options_domains_preset_1": {
     "message": "Enabled on all sites"
@@ -208,7 +208,7 @@
     "message": "Disabled on all sites"
   },
   "options_domains_preset_title": {
-    "message": "Select default behavior"
+    "message": "Default flattring behavior"
   },
   "options_review_budget_label":
   {

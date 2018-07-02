@@ -13,8 +13,8 @@ const i18n = require("../i18n");
 const {VirtualElement, h} = require("./virtual-element");
 
 let values = [
-  STATUS_UNDEFINED,
   STATUS_ENABLED,
+  STATUS_UNDEFINED,
   STATUS_DISABLED
 ];
 

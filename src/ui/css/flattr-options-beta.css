@@ -5,7 +5,6 @@ flattr-options-beta
   width: 460px;
   margin: auto;
   padding: 50px 0;
-  color: #797979;
   font-size: 15px;
   line-height: 20px;
   font-weight: 400;
@@ -20,11 +19,6 @@ flattr-options-beta a
 {
   color: #1AA3D4;
   font-weight: 700;
-}
-
-flattr-options-beta
-{
-  text-align: center;
 }
 
 flattr-options-beta .consent

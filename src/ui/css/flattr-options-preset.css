@@ -1,6 +1,10 @@
 flattr-options-preset
 {
-  border-top: 1px solid #555;
+  display: block;
+  width: 460px;
+  margin: auto;
+  padding: 50px;
+  border-top: 1px solid #CCC;
 }
 
 flattr-options-preset ul
@@ -20,16 +24,27 @@ flattr-options-preset input
 
 flattr-options-preset label
 {
+  color: #555;
   cursor: pointer;
 }
 
-flattr-options-preset input:checked + label
+flattr-options-preset label::before
 {
-  color: red;
+  display: inline-block;
+  margin: 5px;
+  font-size: 1.5em;
+  font-weight: bold;
+  vertical-align: middle;
+  content: "\2610";
 }
 
-flattr-options-preset li a:not(:hover)
+flattr-options-preset input:checked + label::before
 {
-  color: inherit;
-  text-decoration: underline;
+  color: #38B838;
+  content: "\2611";
+}
+
+flattr-options-preset li a
+{
+  color: #1AA3D4;
 }
