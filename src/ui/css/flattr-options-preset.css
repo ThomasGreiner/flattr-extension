@@ -14,34 +14,15 @@ flattr-options-preset ul
 
 flattr-options-preset li
 {
+  padding: 5px 0;
   list-style: none;
-}
-
-flattr-options-preset input
-{
-  display: none;
 }
 
 flattr-options-preset label
 {
+  margin: 0 5px;
   color: #555;
   cursor: pointer;
-}
-
-flattr-options-preset label::before
-{
-  display: inline-block;
-  margin: 5px;
-  font-size: 1.5em;
-  font-weight: bold;
-  vertical-align: middle;
-  content: "\2610";
-}
-
-flattr-options-preset input:checked + label::before
-{
-  color: #38B838;
-  content: "\2611";
 }
 
 flattr-options-preset li a
