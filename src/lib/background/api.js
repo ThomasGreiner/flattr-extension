@@ -19,7 +19,8 @@ const {
   getEntity,
   getStatus,
   hasDomainAuthors,
-  setEntityStatus
+  setEntityStatus,
+  setPresetStatus
 } = require("./domains");
 const flattrManager = require("./flattrManager");
 require("./session");
@@ -175,6 +176,17 @@ ipc.on("account-subscription-changed", ({data}) =>
 
 ipc.on("status-change", ({data: {status, entity}}) =>
 {
+  if (!entity)
+  {
+    setPresetStatus(status)
+        .then(() =>
+        {
+          record(null, "user-status-preset-changed", status);
+        })
+        .catch((err) => console.error(err));
+    return;
+  }
+
   setEntityStatus(entity, status)
   .then(() =>
   {

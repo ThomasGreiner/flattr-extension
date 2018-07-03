@@ -3,7 +3,7 @@
 const {document} = require("global/window");
 
 const {STATUS_DISABLED, STATUS_UNDEFINED} = require("../../common/constants");
-const settings = require("../../common/settings");
+const ipc = require("../../common/ipc");
 const i18n = require("../i18n");
 const {VirtualElement, h} = require("./virtual-element");
 
@@ -17,7 +17,7 @@ class OptionsSectionPreset extends VirtualElement
   set value(value)
   {
     this._value = value;
-    settings.set("domains.preset", value);
+    ipc.send("status-change", {status: value});
     this.render();
   }
 
