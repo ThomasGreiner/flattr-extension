@@ -2,18 +2,12 @@
 
 const {document} = require("global/window");
 
-const {
-  STATUS_DISABLED,
-  STATUS_ENABLED,
-  STATUS_UNDEFINED
-} = require("../../common/constants");
-const ipc = require("../../common/ipc");
+const {STATUS_DISABLED, STATUS_UNDEFINED} = require("../../common/constants");
 const settings = require("../../common/settings");
 const i18n = require("../i18n");
 const {VirtualElement, h} = require("./virtual-element");
 
 let values = [
-  STATUS_ENABLED,
   STATUS_UNDEFINED,
   STATUS_DISABLED
 ];
