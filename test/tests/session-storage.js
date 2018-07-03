@@ -62,6 +62,9 @@ function createMockStorage({presets})
     );
   }
 
+  chrome.storage.local.get.withArgs("domains.preset")
+      .yields({"domains.preset": undefined});
+
   let {db: flattrsDb} = getDatabase("flattrs");
   let {db: sessionDb} = getDatabase("session");
 
