@@ -50,7 +50,8 @@ let defaultEvents = [
     status: expectedStatus,
     url: "http://youtube.com/watch?a=A&v=V&b=B"
   }],
-  [1, "author", "http://youtube.com/user/foo"]
+  [1, "author", "http://youtube.com/user/foo"],
+  [1, "flattr-id", "foo-id"]
 ];
 
 function createMockCollector(events)
@@ -315,7 +316,8 @@ describe("Test stats processing", () =>
         status: expectedStatus,
         url: 2
       }],
-      [now + 6, 1, "author", 3]
+      [now + 6, 1, "author", 3],
+      [now + 7, 1, "flattr-id", 4]
     ];
 
     let {collect} = createMockCollector(defaultEvents);

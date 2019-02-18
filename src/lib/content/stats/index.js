@@ -39,7 +39,13 @@ let events = {
 
 on("load", ({isActive, isBlocked}) =>
 {
-  if (isLoaded || !isActive || isBlocked)
+  if (isLoaded)
+    return;
+
+  // TODO: only load when status is undefined
+  require("./flattrId.js");
+
+  if (!isActive || isBlocked)
     return;
 
   isLoaded = true;

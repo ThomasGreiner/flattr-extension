@@ -60,6 +60,9 @@ function collect({dateRange, skipSubstitution})
         case "author":
           data = substituteString(data, idCache);
           break;
+        case "flattr-id":
+          data = substituteString(data, idCache);
+          break;
         case "state":
           delete data.title;
           data.url = substituteURL(data.url, idCache);

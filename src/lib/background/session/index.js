@@ -30,6 +30,9 @@ on("data", ({tabId, action, data}) =>
       return;
     case "audible-ongoing":
       return attention.start(tabId, {background: true});
+    case "flattr-id":
+      // TODO: enable flattring for this session if its status is undefined
+      return;
     case "idle":
       switch (data)
       {
